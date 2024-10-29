@@ -5,7 +5,7 @@ set -e
 trap 'error_handling' EXIT
 error_handling() {
     exit_status=$?
-    error_message=$(cat /tmp/RedParrot/errors.log)
+    error_message=$(cat errors.log)
     if [ "$exit_status" -ne 0 ]; then
         printf "\r"
         print_error "$error_message"
@@ -49,6 +49,7 @@ function banner () {
     echo $ENDCOLOR
     echo ""
 }
+
 # Functions to format the output
 function spinner() {
     local i=0 sp n message
@@ -93,9 +94,9 @@ function is_user_root () {
 function clean_up_tmp () {
     print_info "Cleaning up"
     spinner &
-    rm -rf /tmp/RedParrot
+    rm -rf /tmp/RedParrot/
     spinner_end
-    print_success "Cleanned up /tmp/RedParrot"
+    print_success "Cleaned up temp files"
 }
 
 # Update system
@@ -107,19 +108,25 @@ function update_system () {
     (apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y) 1>update.log 2>errors.log
     spinner_end
     print_success "System updated"
-    
 }
 
 # Install Java version 21 for Burpsuite to work
 function install_java_21 () {
     print_info "Installing Java version 21 for Burpsuite"
+    if [ -d "/usr/lib/jvm/jdk-21" ]; then
+        print_success "Java version 21 already installed"
+        return 0
+    fi
+    print_info "Installing Java version 21 for Burpsuite"
     spinner &
     java_21_url="https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
-    wget -P /tmp/RedParrot/ $java_21_url 1>java_update.log 2>/tmp/RedParrot/errors.log
-    tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>java_update.log 2>errors.log
+    wget -P /tmp/RedParrot/ $java_21_url 1>java_update.log 2>errors.log
+    tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>>java_update.log 2>>errors.log
+    mv /tmp/RedParrot/jdk-21.0.2/ /usr/lib/jvm/jdk-21 2>>errors.log
     spinner_end
     print_success "Java version 21 installed"
 }
+
 
 # Add Burpsuite cerificate to CA Certificates
 function get_burp_cert () {
@@ -138,7 +145,7 @@ function firefox () {
     spinner &
     default_profile=$(ls /home/$target_user/.mozilla/firefox/ | grep default-release)
     sqlite3 /home/$target_user/.mozilla/firefox/$default_profile/places.sqlite ".restore ./files/firefox/places.sqlite" 2>errors.log
-    cp ./files/firefox/policies.json /usr/lib/firefox/distribution 2>errors.logs
+    cp ./files/firefox/policies.json /usr/lib/firefox/distribution 2>errors.log
     spinner_end
     print_success "Configured Firefox"
 }
@@ -152,7 +159,6 @@ function wallpapers () {
     spinner_end
     print_success "Wallpapers copied"
 }
-
 
 function main () {
     is_user_root
