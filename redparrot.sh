@@ -116,6 +116,7 @@ function install_java_21 () {
     if [ -d "/usr/lib/jvm/jdk-21" ]; then
         print_success "Java version 21 already installed"
         return 0
+    fi
     spinner &
     java_21_url="https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
     wget -P /tmp/RedParrot/ $java_21_url 1>java_update.log 2>errors.log
