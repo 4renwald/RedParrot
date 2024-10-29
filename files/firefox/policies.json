@@ -1,0 +1,69 @@
+{
+	"policies": {
+		"DisableAppUpdate": true,
+		"DisplayBookmarksToolbar": true,
+		"NoDefaultBookmarks": true,
+		"OverrideFirstRunPage": "",
+		"OverridePostUpdatePage": "",
+		"Extensions": {
+			"Install": [
+				"https://addons.mozilla.org/firefox/downloads/file/4359254/darkreader-4.9.94.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/4163669/hack_the_box_v3_theme-1.1.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/3907986/plum_torte-1.1.xpi"
+				"https://addons.mozilla.org/firefox/downloads/file/4355576/wappalyzer-6.10.74.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/4241002/cookie_editor-1.13.0.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/4228676/foxyproxy_standard-8.9.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/4350168/uaswitcher-1.4.68.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/4321653/privacy_badger17-2024.7.17.xpi",
+				"https://addons.mozilla.org/firefox/downloads/file/4359936/ublock_origin-1.60.0.xpi"
+            ]
+		},
+		"Homepage": {
+			"URL": "https://google.com",
+			"Locked": false,
+			"StartPage": "homepage"
+		},
+		"SearchEngines": {
+			"Default": "Google",
+			"PreventInstalls": true
+		},
+		"SearchSuggestEnabled": false,
+		"DisableTelemetry": true,
+		"CaptivePortal": false,
+		"Cookies": {
+			"Default": true,
+			"AcceptThirdParty": "never",
+			"RejectTracker": true
+		},
+		"DNSOverHTTPS": {
+			"Enabled": false
+		},
+		"UserMessaging": {
+			"WhatsNew": false,
+			"ExtensionRecommendations": false,
+			"FeatureRecommendations": false,
+			"UrlbarInterventions": false,
+			"SkipOnboarding": true
+		},
+		"DisableFeedbackCommands": true,
+		"DisableFirefoxStudies": true,
+		"DisablePocket": true,
+		"DontCheckDefaultBrowser": true,
+		"EnableTrackingProtection": {
+			"Value": true,
+			"Cryptomining": true,
+			"Fingerprinting": true
+		},
+		"FirefoxHome": {
+			"Search": true,
+			"TopSites": false,
+			"Highlights": false,
+			"Pocket": false,
+			"Snippets": false,
+			"Locked": false
+		},
+		"HardwareAcceleration": true,
+		"NetworkPrediction": false,
+		"PromptForDownloadLocation": true
+	}
+}

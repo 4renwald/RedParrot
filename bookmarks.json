@@ -1,0 +1,210 @@
+{
+    "guid": "root________",
+    "title": "",
+    "index": 0,
+    "dateAdded": 1677491725273000,
+    "lastModified": 1677510435229000,
+    "id": 1,
+    "typeCode": 2,
+    "type": "text/x-moz-place-container",
+    "root": "placesRoot",
+    "children": [
+        {
+            "guid": "menu________",
+            "title": "menu",
+            "index": 0,
+            "dateAdded": 1677491725273000,
+            "lastModified": 1677491725375000,
+            "id": 2,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "bookmarksMenuFolder",
+            "children": [
+                {
+                    "guid": "G7GoZA-zdZCv",
+                    "title": "Mozilla Firefox",
+                    "index": 0,
+                    "dateAdded": 1677491725375000,
+                    "lastModified": 1677491725375000,
+                    "id": 7,
+                    "typeCode": 2,
+                    "type": "text/x-moz-place-container",
+                    "children": [
+                        {
+                            "guid": "pYBTSjGyrQOm",
+                            "title": "Get Help",
+                            "index": 0,
+                            "dateAdded": 1677491725375000,
+                            "lastModified": 1677491725375000,
+                            "id": 8,
+                            "typeCode": 1,
+                            "iconUri": "fake-favicon-uri:https://support.mozilla.org/products/firefox",
+                            "type": "text/x-moz-place",
+                            "uri": "https://support.mozilla.org/products/firefox"
+                        },
+                        {
+                            "guid": "L5zYVdzjl33C",
+                            "title": "Customize Firefox",
+                            "index": 1,
+                            "dateAdded": 1677491725375000,
+                            "lastModified": 1677491725375000,
+                            "id": 9,
+                            "typeCode": 1,
+                            "iconUri": "fake-favicon-uri:https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars?utm_source=firefox-browser&utm_medium=default-bookmarks&utm_campaign=customize",
+                            "type": "text/x-moz-place",
+                            "uri": "https://support.mozilla.org/kb/customize-firefox-controls-buttons-and-toolbars?utm_source=firefox-browser&utm_medium=default-bookmarks&utm_campaign=customize"
+                        },
+                        {
+                            "guid": "X7rrTyBm5u0-",
+                            "title": "Get Involved",
+                            "index": 2,
+                            "dateAdded": 1677491725375000,
+                            "lastModified": 1677491725375000,
+                            "id": 10,
+                            "typeCode": 1,
+                            "iconUri": "fake-favicon-uri:https://www.mozilla.org/contribute/",
+                            "type": "text/x-moz-place",
+                            "uri": "https://www.mozilla.org/contribute/"
+                        },
+                        {
+                            "guid": "DXkQlwMc-FTW",
+                            "title": "About Us",
+                            "index": 3,
+                            "dateAdded": 1677491725375000,
+                            "lastModified": 1677491725375000,
+                            "id": 11,
+                            "typeCode": 1,
+                            "iconUri": "fake-favicon-uri:https://www.mozilla.org/about/",
+                            "type": "text/x-moz-place",
+                            "uri": "https://www.mozilla.org/about/"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "guid": "toolbar_____",
+            "title": "toolbar",
+            "index": 1,
+            "dateAdded": 1677491725273000,
+            "lastModified": 1677510435229000,
+            "id": 3,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "toolbarFolder",
+            "children": [
+                {
+                    "guid": "Gl27ur62tB09",
+                    "title": "Exegol Doc",
+                    "index": 0,
+                    "dateAdded": 1677508629772000,
+                    "lastModified": 1677510435229000,
+                    "id": 15,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://exegol.readthedocs.io/en/latest/"
+                },
+                {
+                    "guid": "XWBFPuGiLsEy",
+                    "title": "THR",
+                    "index": 1,
+                    "dateAdded": 1677491757670000,
+                    "lastModified": 1677508618836000,
+                    "id": 13,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://www.thehacker.recipes/"
+                },
+                {
+                    "guid": "ZqpoAZUf95GW",
+                    "title": "THR tools",
+                    "index": 2,
+                    "dateAdded": 1677508587916000,
+                    "lastModified": 1677508612553000,
+                    "id": 14,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://tools.thehacker.recipes/"
+                },
+                {
+                    "guid": "-4d993AFTkn-",
+                    "title": "HackTricks",
+                    "index": 3,
+                    "dateAdded": 1677508668596000,
+                    "lastModified": 1677508681872000,
+                    "id": 16,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://book.hacktricks.xyz/welcome/readme"
+                },
+                {
+                    "guid": "-6cLr-AUAEFs",
+                    "title": "PayloadAllTheThings",
+                    "index": 4,
+                    "dateAdded": 1677508695290000,
+                    "lastModified": 1677508702264000,
+                    "id": 17,
+                    "typeCode": 1,
+                    "iconUri": "https://github.githubassets.com/favicons/favicon.svg#tippytop",
+                    "type": "text/x-moz-place",
+                    "uri": "https://github.com/swisskyrepo/PayloadsAllTheThings"
+                },
+                {
+                    "guid": "XrMRM0u1CxMe",
+                    "title": "HackTheBox",
+                    "index": 5,
+                    "dateAdded": 1677508712316000,
+                    "lastModified": 1677508716097000,
+                    "id": 18,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://www.hackthebox.com/"
+                },
+                {
+                    "guid": "oCD-HwFkudNT",
+                    "title": "RedTeam Notes",
+                    "index": 6,
+                    "dateAdded": 1677509423842000,
+                    "lastModified": 1677509441008000,
+                    "id": 19,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://www.ired.team/"
+                },
+                {
+                    "guid": "KA5Xj0y_5_Lx",
+                    "title": "CyberChef",
+                    "index": 7,
+                    "dateAdded": 1697127287342000,
+                    "lastModified": 1697127287342000,
+                    "id": 20,
+                    "typeCode": 1,
+                    "type": "text/x-moz-place",
+                    "uri": "https://gchq.github.io/CyberChef/"
+                }
+            ]
+        },
+        {
+            "guid": "unfiled_____",
+            "title": "unfiled",
+            "index": 3,
+            "dateAdded": 1677491725273000,
+            "lastModified": 1677491725372000,
+            "id": 5,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "unfiledBookmarksFolder"
+        },
+        {
+            "guid": "mobile______",
+            "title": "mobile",
+            "index": 4,
+            "dateAdded": 1677491725279000,
+            "lastModified": 1677491725372000,
+            "id": 6,
+            "typeCode": 2,
+            "type": "text/x-moz-place-container",
+            "root": "mobileFolder"
+        }
+    ]
+}
