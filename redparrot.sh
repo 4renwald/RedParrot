@@ -13,7 +13,7 @@ error_handling() {
     fi
 }
 
-# Re-used variablesjav
+# Vars
 target_user=$(ls /home)
 
 # Setting colors for text format
