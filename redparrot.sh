@@ -89,6 +89,7 @@ function is_user_root () {
     fi
 }
 
+# Clean up /tmp/RedParrot folder when failure or end
 function clean_up_tmp () {
     print_info "Cleaning up"
     spinner &
@@ -96,6 +97,7 @@ function clean_up_tmp () {
     spinner_end
     print_success "Cleanned up /tmp/RedParrot"
 }
+
 # Update system
 function update_system () {
     print_info "Updating the system"
@@ -108,6 +110,7 @@ function update_system () {
     
 }
 
+# Update Java to version 21 for Burpsuite to work
 function update_java () {
     print_info "Updating Java to version 21 for Burpsuite"
     spinner &
@@ -117,6 +120,7 @@ function update_java () {
     spinner_end
     print_success "Java updated to version 21"
 }
+
 # Add Burpsuite cerificate to CA Certificates
 function get_burp_cert () {
     print_info "Retrieving and installing Burpsuite certificate to ca-certificates"
@@ -128,7 +132,7 @@ function get_burp_cert () {
     print_success "Burpsuite certificate installed"
 }
 
-# Firefox
+# Firefox configurations
 function firefox () {
     print_info "Configuring Firefox"
     spinner &
