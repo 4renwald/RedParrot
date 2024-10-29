@@ -13,7 +13,7 @@ error_handling() {
     fi
 }
 
-# Re-used variables
+# Re-used variablesjav
 target_user=$(ls /home)
 
 # Setting colors for text format
@@ -110,15 +110,15 @@ function update_system () {
     
 }
 
-# Update Java to version 21 for Burpsuite to work
-function update_java () {
-    print_info "Updating Java to version 21 for Burpsuite"
+# Install Java version 21 for Burpsuite to work
+function install_java_21 () {
+    print_info "Installing Java version 21 for Burpsuite"
     spinner &
     java_21_url="https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
     wget -P /tmp/RedParrot/ $java_21_url 1>java_update.log 2>/tmp/RedParrot/errors.log
     tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>java_update.log 2>errors.log
     spinner_end
-    print_success "Java updated to version 21"
+    print_success "Java version 21 installed"
 }
 
 # Add Burpsuite cerificate to CA Certificates
@@ -158,7 +158,7 @@ function main () {
     is_user_root
     banner
     update_system
-    update_java
+    install_java_21
     get_burp_cert
     firefox
     wallpapers
