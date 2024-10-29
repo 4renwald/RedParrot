@@ -125,7 +125,6 @@ function install_java_21 () {
     print_success "Java version 21 installed"
 }
 
-
 # Add Burpsuite cerificate to CA Certificates
 function get_burp_cert () {
     print_info "Retrieving and installing Burpsuite certificate to ca-certificates"
