@@ -120,7 +120,7 @@ function install_java_21 () {
     spinner &
     java_21_url="https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
     wget -P /tmp/RedParrot/ $java_21_url 1>java_update.log 2>errors.log
-    tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>>java_update.log 2>>errors.log
+    tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>java_update.log 2>errors.log
     mv /tmp/RedParrot/jdk-21.0.2/ /usr/lib/jvm/jdk-21 2>>errors.log
     spinner_end
     print_success "Java version 21 installed"
@@ -152,10 +152,17 @@ function firefox () {
 function wallpapers () {
     print_info  "Copying Wallpapers"
     spinner &
-    mkdir -p /home/$target_user/Pictures/Wallpapers
-    cp ./files/wallpapers/* /home/$target_user/Pictures/Wallpapers
+    cp ./files/wallpapers/* /usr/share/backgrounds
+    sudo -u $target_user gsettings set org.mate.background picture-filename /usr/share/backgrounds/w01.jpg
     spinner_end
     print_success "Wallpapers copied"
+}
+
+function settings () {
+    print_info "Configuring user and system settings"
+    spinner &
+    spinner_end
+    print_success "Configured user and system settings"
 }
 
 function main () {
@@ -163,9 +170,10 @@ function main () {
     banner
     update_system
     install_java_21
-    get_burp_cert
+    
     firefox
     wallpapers
+    settings
     clean_up_tmp
 }
 
