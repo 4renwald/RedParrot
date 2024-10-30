@@ -142,8 +142,10 @@ function firefox () {
     print_info "Configuring Firefox"
     spinner &
     default_profile=$(ls /home/$target_user/.mozilla/firefox/ | grep default-release)
-    sqlite3 /home/$target_user/.mozilla/firefox/$default_profile/places.sqlite ".restore ./files/firefox/places.sqlite" 2>errors.log
-    cp ./files/firefox/policies.json /usr/lib/firefox/distribution 2>errors.log
+    sqlite3 /home/$target_user/.mozilla/firefox/$default_profile/places.sqlite ".restore ./files/applications/firefox/places.sqlite" 2>errors.log
+    cp ./files/applications/firefox/policies.json /usr/lib/firefox/distribution 2>errors.log
+    mkdir -p /etc/htb 2> errors.log
+    cp -rf ./files/system/scripts/* /etc/htb
     spinner_end
     print_success "Configured Firefox"
 }
@@ -161,6 +163,16 @@ function wallpapers () {
 function settings () {
     print_info "Configuring user and system settings"
     spinner &
+    cp -rf ./files/homedir/ /home/$target_user/ 2>errors.log
+    cp -rf ./files/system/themes/ /usr/share/themes 2>errors.log
+    gsettings set org.mate.interface gtk-theme 'htb-gtk-theme'
+    gsettings set org.mate.interface icon-theme 'Hack-The-Box-Icons'
+    gsettings set org.mate.caja.preferences background-color '#0C151F'
+    gsettings set org.mate.caja.preferences background-set true
+    gsettings set org.mate.background picture-filename '/usr/share/backgrounds/w01.jpg'
+    sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_pamel
+    dconf load /org/mate/panel/ < files/system/dconf_terminal
+    sudo killall mate-panel
     spinner_end
     print_success "Configured user and system settings"
 }
