@@ -165,14 +165,15 @@ function settings () {
     spinner &
     cp -rf ./files/homedir/ /home/$target_user/ 2>errors.log
     cp -rf ./files/system/themes/ /usr/share/themes 2>errors.log
-    gsettings set org.mate.interface gtk-theme 'htb-gtk-theme'
-    gsettings set org.mate.interface icon-theme 'Hack-The-Box-Icons'
-    gsettings set org.mate.caja.preferences background-color '#0C151F'
-    gsettings set org.mate.caja.preferences background-set true
-    gsettings set org.mate.background picture-filename '/usr/share/backgrounds/w01.jpg'
-    sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_pamel
-    dconf load /org/mate/panel/ < files/system/dconf_terminal
-    sudo killall mate-panel
+    gsettings set org.mate.interface gtk-theme 'htb-gtk-theme' 2>errors.log
+    gsettings set org.mate.interface icon-theme 'Hack-The-Box-Icons' 2>errors.log
+    gsettings set org.mate.caja.preferences background-color '#0C151F' 2>errors.log
+    gsettings set org.mate.caja.preferences background-set true 2>errors.log
+    gsettings set org.mate.background picture-filename '/usr/share/backgrounds/w01.jpg' 2>errors.log
+    sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
+    dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
+    sudo killall mate-panel 2>errors.log
+    dconf load /org/mate/terminal/ < files/system/dconf_terminal 2>errors.log
     spinner_end
     print_success "Configured user and system settings"
 }
