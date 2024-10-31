@@ -24,7 +24,7 @@ PURPLE=$(tput setaf 13)
 ENDCOLOR=$(tput sgr0)
 
 # Print banner
-function banner () {
+ banner () {
     echo "$RED⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣶⡾⠤⠤⠤⠤⠄⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠋⡡⠖⠒⠒⢄⣤⠒⠛⠳⢄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -50,8 +50,8 @@ function banner () {
     echo ""
 }
 
-# Functions to format the output
-function spinner() {
+# s to format the output
+spinner() {
     local i=0 sp n message
     sp='⣾⣽⣻⢿⡿⣟⣯⣷'
     n=${#sp}
@@ -64,26 +64,26 @@ function spinner() {
     done
 }
 
-function spinner_end() {
+spinner_end() {
     kill "$!"
     printf "\r"
 }
 
-function print_info () {
+print_info () {
     echo -e "$PURPLE[*]$ENDCOLOR $1"
 }
 
-function print_success () {
+print_success () {
     echo -e "$GREEN[+]$ENDCOLOR $1"
 }
 
-function print_error () {
+print_error () {
     echo -e "$RED[!]$ENDCOLOR $1"
 }
 
 
 # Check if script runs as root
-function is_user_root () {
+is_user_root () {
     if [ "$EUID" -ne 0 ]; then
         print_error "This script needs to be run using sudo"
         exit 0
@@ -91,7 +91,7 @@ function is_user_root () {
 }
 
 # Clean up /tmp/RedParrot folder when failure or end
-function clean_up_tmp () {
+clean_up_tmp () {
     print_info "Cleaning up"
     spinner &
     rm -rf /tmp/RedParrot/
@@ -100,13 +100,13 @@ function clean_up_tmp () {
 }
 
 # Change to the directory of the script
-function change_directory_script () {
+change_directory_script () {
   SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
   cd $SCRIPT_DIR
 }
 
 # Update system
-function update_system () {
+update_system () {
     print_info "Updating the system"
     spinner &
     mkdir -p /tmp/RedParrot
@@ -116,15 +116,20 @@ function update_system () {
     print_success "System updated"
 }
 
-# Install dependencies
-function install_dependencies () {
-    print_info "Installing required dependencies"
-    curl https://pyenv.run 1>dependencies.log 2>errors.log | bash 1>dependencies.log 2>errors.log
-    print_success "Dependencies installed"ls 
+# Install pyenv
+install_pyenv () {
+    print_info "Installing Pyenv"
+    if [ -d "/home/$target_user/.pyenv" ]; then
+        print_success "Pyenv is already installed"
+        return 0
+    else
+        sudo -u "$target_user" bash -c 'curl -s https://pyenv.run | bash' >dependencies.log 2>errors.log
+    fi
+    print_success "Pyenv installed"
 }
 
 # Install Java version 21 for Burpsuite to work
-function install_java_21 () {
+install_java_21 () {
     print_info "Installing Java version 21 for Burpsuite"
     if [ -d "/usr/lib/jvm/jdk-21" ]; then
         print_success "Java version 21 already installed"
@@ -140,7 +145,7 @@ function install_java_21 () {
 }
 
 # Add Burpsuite cerificate to CA Certificates
-function get_burp_cert () {
+get_burp_cert () {
     print_info "Retrieving and installing Burpsuite certificate to ca-certificates"
     spinner &
     timeout 45 /usr/lib/jvm/jdk-21/bin/java -Djava.awt.headless=true -jar /usr/share/burpsuite/burpsuite_community.jar < <(echo y) 1>burp_cert.log 2>errors.log &
@@ -151,7 +156,7 @@ function get_burp_cert () {
 }
 
 # Firefox configurations
-function firefox () {
+firefox () {
     print_info "Configuring Firefox"
     spinner &
     default_profile=$(ls /home/$target_user/.mozilla/firefox/ | grep default-release)
@@ -162,7 +167,7 @@ function firefox () {
 }
 
 # Copy Wallpapers
-function wallpapers () {
+wallpapers () {
     print_info  "Copying Wallpapers"
     spinner &
     cp ./files/wallpapers/* /usr/share/backgrounds
@@ -172,7 +177,7 @@ function wallpapers () {
 }
 
 # General system settings (Terminal, themes, etc..)
-function settings () {
+settings () {
     print_info "Configuring user and system settings"
     spinner &
     mkdir -p /etc/htb 2> errors.log
@@ -185,20 +190,20 @@ function settings () {
     gsettings set org.mate.caja.preferences background-color '#0C151F' 2>errors.log
     gsettings set org.mate.caja.preferences background-set true 2>errors.log
     gsettings set org.mate.background picture-filename '/usr/share/backgrounds/w01.jpg' 2>errors.log
-    sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
-    dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
+    #sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
+    #dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     sudo killall mate-panel 2>errors.log
     dconf load /org/mate/terminal/ < files/system/dconf_terminal 2>errors.log
     spinner_end
     print_success "Configured user and system settings"
 }
 
-function main () {
+main () {
     is_user_root
     change_directory_script
     banner
     update_system
-    install_dependencies
+    install_pyenv
     install_java_21
     #get_burp_cert
     firefox
