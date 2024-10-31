@@ -99,6 +99,12 @@ function clean_up_tmp () {
     print_success "Cleaned up temp files"
 }
 
+# Change to the directory of the script
+function change_directory_script () {
+  SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+  cd $SCRIPT_DIR
+}
+
 # Update system
 function update_system () {
     print_info "Updating the system"
@@ -108,6 +114,13 @@ function update_system () {
     (apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y) 1>update.log 2>errors.log
     spinner_end
     print_success "System updated"
+}
+
+# Install dependencies
+function install_dependencies () {
+    print_info "Installing required dependencies"
+    curl https://pyenv.run 1>dependencies.log 2>errors.log | bash 1>dependencies.log 2>errors.log
+    print_success "Dependencies installed"ls 
 }
 
 # Install Java version 21 for Burpsuite to work
@@ -144,8 +157,6 @@ function firefox () {
     default_profile=$(ls /home/$target_user/.mozilla/firefox/ | grep default-release)
     sqlite3 /home/$target_user/.mozilla/firefox/$default_profile/places.sqlite ".restore ./files/applications/firefox/places.sqlite" 2>errors.log
     cp ./files/applications/firefox/policies.json /usr/lib/firefox/distribution 2>errors.log
-    mkdir -p /etc/htb 2> errors.log
-    cp -rf ./files/system/scripts/* /etc/htb
     spinner_end
     print_success "Configured Firefox"
 }
@@ -160,10 +171,14 @@ function wallpapers () {
     print_success "Wallpapers copied"
 }
 
+# General system settings (Terminal, themes, etc..)
 function settings () {
     print_info "Configuring user and system settings"
     spinner &
-    cp -rf ./files/homedir/ /home/$target_user/ 2>errors.log
+    mkdir -p /etc/htb 2> errors.log
+    cp -rf ./files/system/scripts/* /etc/htb
+    chmod a+x /etc/htb/*
+    cp -rf ./files/homedir/. /home/$target_user/ 2>errors.log
     cp -rf ./files/system/themes/ /usr/share/themes 2>errors.log
     gsettings set org.mate.interface gtk-theme 'htb-gtk-theme' 2>errors.log
     gsettings set org.mate.interface icon-theme 'Hack-The-Box-Icons' 2>errors.log
@@ -180,10 +195,12 @@ function settings () {
 
 function main () {
     is_user_root
+    change_directory_script
     banner
     update_system
+    install_dependencies
     install_java_21
-    
+    #get_burp_cert
     firefox
     wallpapers
     settings
