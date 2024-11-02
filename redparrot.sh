@@ -237,7 +237,7 @@ settings () {
     print_info "Configuring user and system settings"
     spinner &
     
-    # copy bash scripts for terminal in /etc/htb/ 
+    # Copy bash scripts for terminal in /etc/htb/ 
     mkdir -p /etc/RedParrot 2> logs/errors.log
     cp -rf ./files/etc/RedParrot/* /etc/RedParrot
     chmod a+x /etc/RedParrot/*
@@ -248,6 +248,9 @@ settings () {
     # Copy theme settings
     mkdir -p /usr/share/themes/RedParrot
     cp -f ./files/usr/share/themes/index.theme /usr/share/themes/RedParrot
+
+    # Copy icons
+    cp -f ./files/usr/share/icons/htb-icon-theme/htb/* /usr/share/icons/htb-icon-theme/htb/
     
     #sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     #dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
