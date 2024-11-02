@@ -3,8 +3,8 @@
 
 function prompt {
 	Write-Host "PS " -NoNewLine -ForegroundColor Yellow
-    Write-Host "[$(/etc/htb/vpnbash.sh)]" -NoNewLine -ForegroundColor Green
+    Write-Host "[$(/etc/RedParrot/vpnbash.sh)]" -NoNewLine -ForegroundColor Green
     Write-Output " $PWD > "
 }
 
-Write-Output "Welcome to Pwnbox, Powered by Parrot OS"
+Write-Output "Welcome to RedParrot, Powered by Parrot OS"

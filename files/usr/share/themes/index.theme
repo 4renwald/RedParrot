@@ -6,9 +6,9 @@ Comment=
 [X-GNOME-Metatheme]
 GtkTheme=Dracula
 MetacityTheme=Dracula
-IconTheme=hackthebox
-GtkColorScheme=fg_color:#EEEEEE,bg_color:#2d2d2d,text_color:#BBBBBB,base_color:#292929,selected_fg_color:#f9f9f9,selected_bg_color:#008080,tooltip_fg_color:#dedede,tooltip_bg_color:#2d2d2d
+IconTheme=htb-icon-theme
+GtkColorScheme=fg_color:#EEEEEE,bg_color:#2d2d2d,text_color:#BBBBBB,base_color:#292929,selected_fg_color:#f9f9f9,selected_bg_color:#5179a6,tooltip_fg_color:#dedede,tooltip_bg_color:#2d2d2d
 CursorTheme=default
-CursorSize=18
+CursorSize=24
 NotificationTheme=slider
 BackgroundImage=/usr/share/backgrounds/w12.jpg

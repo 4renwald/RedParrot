@@ -147,6 +147,22 @@ install_java_21 () {
     print_success "Java version 21 installed"
 }
 
+# Install PowerShell
+install_pwsh () {
+    print_info "Installing PowerShell"
+    spinner &
+    if command -v pwsh &> /dev/null; then
+        spinner_end
+        print_success "PowerShell is already installed"
+        return 0
+    fi
+    wget -P /tmp/RedParrot/ https://github.com/PowerShell/PowerShell/releases/download/v7.4.6/powershell_7.4.6-1.deb_amd64.deb 1>logs/dracula_theme.log 2>logs/errors.log
+    sudo dpkg -i /tmp/RedParrot/powershell_7.4.6-1.deb_amd64.deb 1>logs/dracula_theme.log 2>logs/errors.log
+    sudo apt-get install -f /tmp/RedParrot/powershell_7.4.6-1.deb_amd64.deb 1>logs/dracula_theme.log 2>logs/errors.log
+    spinner_end
+    print_success "PowerShell installed"
+}
+
 # Add Burpsuite cerificate to CA Certificates
 get_burp_cert () {
     print_info "Retrieving and installing Burpsuite certificate to ca-certificates"
@@ -213,8 +229,8 @@ install_fonts () {
     unzip /tmp/RedParrot/CascadiaCode/CascadiaCode-2404.23.zip -d /tmp/RedParrot/CascadiaCode 1>logs/install_fonts.log 2>logs/errors.log
     rsync -a /tmp/RedParrot/CascadiaCode/ttf/ /home/$target_user/.local/share/fonts/ 2>logs/errors.log
     
-    print_success "Fonts installed"
     spinner_end
+    print_success "Fonts installed"
 }
 # General system settings (Terminal, themes, etc..)
 settings () {
@@ -236,7 +252,7 @@ settings () {
     #sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     #dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     #sudo killall mate-panel 2>errors.log
-    dconf load /org/mate/terminal/ < files/dconf_terminal 2>logs/errors.log
+    sudo -u $target_user dconf load /org/mate/terminal/ < files/dconf_terminal 2>logs/errors.log
     spinner_end
     print_success "Configured user and system settings"
 }
@@ -248,6 +264,7 @@ main () {
     update_system
     install_pyenv
     install_java_21
+    install_pwsh
     get_burp_cert
     firefox
     install_dracula_theme
