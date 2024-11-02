@@ -16,10 +16,6 @@ error_handling() {
 # Vars
 target_user=$(ls /home)
 
-# Create tmp and logs folders for script execution
-mkdir -p /tmp/RedParrot logs
-rm -rf /tmp/RedParrot/* ./logs
-
 # Setting colors for text format
 BLUE=$(tput setaf 14)
 GREEN=$(tput setaf 10)
@@ -103,10 +99,15 @@ clean_up_tmp () {
     print_success "Cleaned up temp files"
 }
 
-# Change to the directory of the script
+# Change to the directory of the script and setup logs and tmp folders
 change_directory_script () {
-  SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-  cd $SCRIPT_DIR
+    SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+    cd $SCRIPT_DIR
+    
+    # Create tmp and logs folders for script execution
+    mkdir -p /tmp/RedParrot
+    mkdir -p logs
+    rm -rf /tmp/RedParrot/* ./logs
 }
 
 # Update system
@@ -200,8 +201,8 @@ intall_fonts () {
     
     # Cascadia Code
     mkdir -p /tmp/RedParrot/CascadiaCode
-    wget -P /tmp/RedParrot/CascadiaCode https://github.com/microsoft/cascadia-code/releases/download/v2404.23/CascadiaCode-2404.23.zip 1>logs/install_fonts.logs 2>errors.logs
-    unzip /tmp/RedParrot/CascadiaCode/CascadiaCode-2404.23.zip -d /tmp/RedParrot/CascadiaCode 1>logs/install_fonts.logs 2>errors.logs
+    wget -P /tmp/RedParrot/CascadiaCode https://github.com/microsoft/cascadia-code/releases/download/v2404.23/CascadiaCode-2404.23.zip 1>logs/install_fonts.log 2>errors.log
+    unzip /tmp/RedParrot/CascadiaCode/CascadiaCode-2404.23.zip -d /tmp/RedParrot/CascadiaCode 1>logs/install_fonts.log 2>errors.log
     mv /tmp/RedParrot/CascadiaCode/ttf/ /home/$target_user/.local/share/fonts
     
     print_success "Fonts installed"
