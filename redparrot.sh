@@ -16,6 +16,10 @@ error_handling() {
 # Vars
 target_user=$(ls /home)
 
+# Create tmp and logs folders for script execution
+mkdir -p /tmp/RedParrot logs
+rm -rf /tmp/RedParrot/* ./logs
+
 # Setting colors for text format
 BLUE=$(tput setaf 14)
 GREEN=$(tput setaf 10)
@@ -50,7 +54,7 @@ ENDCOLOR=$(tput sgr0)
     echo ""
 }
 
-# s to format the output
+# functions to format the output
 spinner() {
     local i=0 sp n message
     sp='⣾⣽⣻⢿⡿⣟⣯⣷'
@@ -109,9 +113,7 @@ change_directory_script () {
 update_system () {
     print_info "Updating the system"
     spinner &
-    mkdir -p /tmp/RedParrot
-    rm -rf /tmp/RedParrot/*
-    (apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y) 1>update.log 2>errors.log
+    (apt update -y && apt full-upgrade -y && apt autoremove -y && apt autoclean -y) 1>logs/update.log 2>logs/errors.log
     spinner_end
     print_success "System updated"
 }
@@ -123,7 +125,7 @@ install_pyenv () {
         print_success "Pyenv is already installed"
         return 0
     else
-        sudo -u "$target_user" bash -c 'curl -s https://pyenv.run | bash' >dependencies.log 2>errors.log
+        sudo -u "$target_user" bash -c 'curl -s https://pyenv.run | bash' >logs/dependencies.log 2>logs/errors.log
     fi
     print_success "Pyenv installed"
 }
@@ -137,9 +139,9 @@ install_java_21 () {
     fi
     spinner &
     java_21_url="https://download.java.net/java/GA/jdk21.0.2/f2283984656d49d69e91c558476027ac/13/GPL/openjdk-21.0.2_linux-x64_bin.tar.gz"
-    wget -P /tmp/RedParrot/ $java_21_url 1>java_update.log 2>errors.log
-    tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>java_update.log 2>errors.log
-    mv /tmp/RedParrot/jdk-21.0.2/ /usr/lib/jvm/jdk-21 2>>errors.log
+    wget -P /tmp/RedParrot/ $java_21_url 1>logs/java_update.log 2>logs/errors.log
+    tar xvf /tmp/RedParrot/openjdk-21.0.2_linux-x64_bin.tar.gz -C /tmp/RedParrot/ 1>logs/java_update.log 2>logs/errors.log
+    mv /tmp/RedParrot/jdk-21.0.2/ /usr/lib/jvm/jdk-21 2>logs/errors.log
     spinner_end
     print_success "Java version 21 installed"
 }
@@ -148,9 +150,9 @@ install_java_21 () {
 get_burp_cert () {
     print_info "Retrieving and installing Burpsuite certificate to ca-certificates"
     spinner &
-    timeout 45 /usr/lib/jvm/jdk-21/bin/java -Djava.awt.headless=true -jar /usr/share/burpsuite/burpsuite_community.jar < <(echo y) 1>burp_cert.log 2>errors.log &
+    timeout 45 /usr/lib/jvm/jdk-21/bin/java -Djava.awt.headless=true -jar /usr/share/burpsuite/burpsuite_community.jar < <(echo y) 1>logs/burp_cert.log 2>logs/errors.log &
     sleep 30
-    curl http://localhost:8080/cert -o /usr/local/share/ca-certificates/BurpSuiteCA.der 2>errors.log
+    curl http://localhost:8080/cert -o /usr/local/share/ca-certificates/BurpSuiteCA.der 2>logs/errors.log
     spinner_end
     print_success "Burpsuite certificate installed"
 }
@@ -160,10 +162,25 @@ firefox () {
     print_info "Configuring Firefox"
     spinner &
     default_profile=$(ls /home/$target_user/.mozilla/firefox/ | grep default-release)
-    sqlite3 /home/$target_user/.mozilla/firefox/$default_profile/places.sqlite ".restore ./files/applications/firefox/places.sqlite" 2>errors.log
-    cp ./files/applications/firefox/policies.json /usr/lib/firefox/distribution 2>errors.log
+    sqlite3 /home/$target_user/.mozilla/firefox/$default_profile/places.sqlite ".restore ./files/applications/firefox/places.sqlite" 2>logs/errors.log
+    cp ./files/applications/firefox/policies.json /usr/lib/firefox/distribution 2>logs/errors.log
     spinner_end
     print_success "Configured Firefox"
+}
+
+# Install Dracula theme on the system
+install_dracula_theme () {
+    print_info "Installing Dracula Theme for GTK"
+    spinner &
+    wget -P /tmp/RedParrot https://github.com/dracula/gtk/archive/master.zip 1>logs/dracula_theme.log 2>logs/errors.log
+    wget -P /tmp/RedParrot https://github.com/dracula/gtk/files/5214870/Dracula.zip 1>logs/dracula_theme.log 2>logs/errors.log
+    unzip /tmp/RedParrot/master.zip -d /tmp/RedParrot 1>logs/dracula_theme.log 2>logs/errors.log
+    mv gtk-master Dracula 
+    mv Dracula /usr/share/themes 
+    unzip /tmp/RedParrot/Dracula.zip -d /tmp/RedParrot 1>logs/dracula_theme.log 2>logs/errors.log
+    mv Dracula /usr/share/icons
+    spinner_end
+    print_success "Dracula theme installed"
 }
 
 # Copy Wallpapers
@@ -171,29 +188,46 @@ wallpapers () {
     print_info  "Copying Wallpapers"
     spinner &
     cp ./files/wallpapers/* /usr/share/backgrounds
-    sudo -u $target_user gsettings set org.mate.background picture-filename /usr/share/backgrounds/w01.jpg
     spinner_end
     print_success "Wallpapers copied"
 }
 
+# Install required fonts
+intall_fonts () {
+    print_info "Installing fonts"
+    spinner &
+    mkdir -p /home/$target_user/.local/share/fonts
+    
+    # Cascadia Code
+    mkdir -p /tmp/RedParrot/CascadiaCode
+    wget -P /tmp/RedParrot/CascadiaCode https://github.com/microsoft/cascadia-code/releases/download/v2404.23/CascadiaCode-2404.23.zip 1>logs/install_fonts.logs 2>errors.logs
+    unzip /tmp/RedParrot/CascadiaCode/CascadiaCode-2404.23.zip -d /tmp/RedParrot/CascadiaCode 1>logs/install_fonts.logs 2>errors.logs
+    mv /tmp/RedParrot/CascadiaCode/ttf/ /home/$target_user/.local/share/fonts
+    
+    print_success "Fonts installed"
+    spinner_end
+}
 # General system settings (Terminal, themes, etc..)
 settings () {
     print_info "Configuring user and system settings"
     spinner &
-    mkdir -p /etc/htb 2> errors.log
-    cp -rf ./files/system/scripts/* /etc/htb
-    chmod a+x /etc/htb/*
+    
+    # copy bash scripts for terminal in /etc/htb/ 
+    mkdir -p /etc/RedParrot 2> errors.log
+    cp -rf ./files/system/scripts/* /etc/RedParrot
+    chmod a+x /etc/RedParrot/*
+
+    # Copy user configs to homedir
     cp -rf ./files/homedir/. /home/$target_user/ 2>errors.log
-    cp -rf ./files/system/themes/ /usr/share/themes 2>errors.log
-    gsettings set org.mate.interface gtk-theme 'htb-gtk-theme' 2>errors.log
-    gsettings set org.mate.interface icon-theme 'Hack-The-Box-Icons' 2>errors.log
-    gsettings set org.mate.caja.preferences background-color '#0C151F' 2>errors.log
-    gsettings set org.mate.caja.preferences background-set true 2>errors.log
-    gsettings set org.mate.background picture-filename '/usr/share/backgrounds/w01.jpg' 2>errors.log
+
+    # Copy theme settings
+    mkdir -p /usr/share/themes/RedParrot
+    copy -f ./files/usr/share/themes/index.theme /usr/share/themes/RedParrot
+    
     #sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     #dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
-    sudo killall mate-panel 2>errors.log
-    dconf load /org/mate/terminal/ < files/system/dconf_terminal 2>errors.log
+    #sudo killall mate-panel 2>errors.log
+    dconf load /org/mate/terminal/ < files/dconf_terminal 2>errors.log
     spinner_end
     print_success "Configured user and system settings"
 }
@@ -205,8 +239,10 @@ main () {
     update_system
     install_pyenv
     install_java_21
-    #get_burp_cert
+    get_burp_cert
     firefox
+    install_dracula_theme
+    install_fonts
     wallpapers
     settings
     clean_up_tmp
