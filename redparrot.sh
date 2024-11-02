@@ -5,7 +5,7 @@ set -e
 trap 'error_handling' EXIT
 error_handling() {
     exit_status=$?
-    error_message=$(cat errors.log)
+    error_message=$(cat logs/errors.log)
     if [ "$exit_status" -ne 0 ]; then
         printf "\r"
         print_error "$error_message"
@@ -106,8 +106,8 @@ change_directory_script () {
     
     # Create tmp and logs folders for script execution
     mkdir -p /tmp/RedParrot
-    mkdir -p logs
-    rm -rf /tmp/RedParrot/* ./logs
+    mkdir -p ./logs
+    rm -rf /tmp/RedParrot/* ./logs/*
 }
 
 # Update system
@@ -151,9 +151,15 @@ install_java_21 () {
 get_burp_cert () {
     print_info "Retrieving and installing Burpsuite certificate to ca-certificates"
     spinner &
-    timeout 45 /usr/lib/jvm/jdk-21/bin/java -Djava.awt.headless=true -jar /usr/share/burpsuite/burpsuite_community.jar < <(echo y) 1>logs/burp_cert.log 2>logs/errors.log &
-    sleep 30
-    curl http://localhost:8080/cert -o /usr/local/share/ca-certificates/BurpSuiteCA.der 2>logs/errors.log
+     if [ -f "/usr/local/share/ca-certificates/BurpSuiteCA.der" ]; then
+        print_success "BurpSuite certificate already installed"
+        spinner_end
+        return 0
+    else
+        timeout 45 /usr/lib/jvm/jdk-21/bin/java -Djava.awt.headless=true -jar /usr/share/burpsuite/burpsuite_community.jar < <(echo y) 1>logs/burp_cert.log 2>logs/errors.log &
+        sleep 30
+        curl http://localhost:8080/cert -o /usr/local/share/ca-certificates/BurpSuiteCA.der 2>logs/errors.log
+    fi
     spinner_end
     print_success "Burpsuite certificate installed"
 }
@@ -173,13 +179,15 @@ firefox () {
 install_dracula_theme () {
     print_info "Installing Dracula Theme for GTK"
     spinner &
+    rm -rf /usr/share/themes/Dracula
+    rm -rf /usr/share/icons/Dracula
     wget -P /tmp/RedParrot https://github.com/dracula/gtk/archive/master.zip 1>logs/dracula_theme.log 2>logs/errors.log
     wget -P /tmp/RedParrot https://github.com/dracula/gtk/files/5214870/Dracula.zip 1>logs/dracula_theme.log 2>logs/errors.log
     unzip /tmp/RedParrot/master.zip -d /tmp/RedParrot 1>logs/dracula_theme.log 2>logs/errors.log
-    mv gtk-master Dracula 
-    mv Dracula /usr/share/themes 
+    mv /tmp/RedParrot/gtk-master /tmp/RedParrot/Dracula 1>logs/dracula_theme.log 2>logs/errors.log
+    mv /tmp/RedParrot/Dracula /usr/share/themes 1>logs/dracula_theme.log 2>logs/errors.log
     unzip /tmp/RedParrot/Dracula.zip -d /tmp/RedParrot 1>logs/dracula_theme.log 2>logs/errors.log
-    mv Dracula /usr/share/icons
+    mv /tmp/RedParrot/Dracula /usr/share/icons 1>logs/dracula_theme.log 2>logs/errors.log
     spinner_end
     print_success "Dracula theme installed"
 }
@@ -194,16 +202,16 @@ wallpapers () {
 }
 
 # Install required fonts
-intall_fonts () {
+install_fonts () {
     print_info "Installing fonts"
     spinner &
     mkdir -p /home/$target_user/.local/share/fonts
     
     # Cascadia Code
     mkdir -p /tmp/RedParrot/CascadiaCode
-    wget -P /tmp/RedParrot/CascadiaCode https://github.com/microsoft/cascadia-code/releases/download/v2404.23/CascadiaCode-2404.23.zip 1>logs/install_fonts.log 2>errors.log
-    unzip /tmp/RedParrot/CascadiaCode/CascadiaCode-2404.23.zip -d /tmp/RedParrot/CascadiaCode 1>logs/install_fonts.log 2>errors.log
-    mv /tmp/RedParrot/CascadiaCode/ttf/ /home/$target_user/.local/share/fonts
+    wget -P /tmp/RedParrot/CascadiaCode https://github.com/microsoft/cascadia-code/releases/download/v2404.23/CascadiaCode-2404.23.zip 1>logs/install_fonts.log 2>logs/errors.log
+    unzip /tmp/RedParrot/CascadiaCode/CascadiaCode-2404.23.zip -d /tmp/RedParrot/CascadiaCode 1>logs/install_fonts.log 2>logs/errors.log
+    rsync -a /tmp/RedParrot/CascadiaCode/ttf/ /home/$target_user/.local/share/fonts/ 2>logs/errors.log
     
     print_success "Fonts installed"
     spinner_end
@@ -214,21 +222,21 @@ settings () {
     spinner &
     
     # copy bash scripts for terminal in /etc/htb/ 
-    mkdir -p /etc/RedParrot 2> errors.log
-    cp -rf ./files/system/scripts/* /etc/RedParrot
+    mkdir -p /etc/RedParrot 2> logs/errors.log
+    cp -rf ./files/etc/RedParrot/* /etc/RedParrot
     chmod a+x /etc/RedParrot/*
 
     # Copy user configs to homedir
-    cp -rf ./files/homedir/. /home/$target_user/ 2>errors.log
+    cp -rf ./files/homedir/. /home/$target_user/ 2>logs/errors.log
 
     # Copy theme settings
     mkdir -p /usr/share/themes/RedParrot
-    copy -f ./files/usr/share/themes/index.theme /usr/share/themes/RedParrot
+    cp -f ./files/usr/share/themes/index.theme /usr/share/themes/RedParrot
     
     #sudo -u $target_user dbus-launch dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     #dconf load /org/mate/panel/ < files/system/dconf_panel 2>errors.log
     #sudo killall mate-panel 2>errors.log
-    dconf load /org/mate/terminal/ < files/dconf_terminal 2>errors.log
+    dconf load /org/mate/terminal/ < files/dconf_terminal 2>logs/errors.log
     spinner_end
     print_success "Configured user and system settings"
 }
